@@ -1,0 +1,34 @@
+Ideia inicial:
+meu Pokémon favorito é o cubone (tenho até uma tatuagem dele), minha ideia é fazer uma ilha pra ele com terreno rochoso, se der tempo farei uma ilha dupla, a outra será pra minha mulher, que gosta do jigglypuff. de noite o cubone chora, ao passar muitas noites, ele evolui para marowak
+
+Importante:
+eu organizei MUITO mal meu antigo código e tive que reorganizar e sofrer as consequências disso, dessa vez pretendo deixar ele mais escalável
+
+Blender tutorial (não achei um modelo bom do cubone na internet então vou fazer um na mão mesmo, mesmo que acabe ficando pior que os da internet):
+https://www.youtube.com/watch?v=peSv5IT5Ve4
+
+Descrição do Cubone:
+Cubone é um pequeno Pokémon réptil, bípede e parecido com um dinossauro, com uma pele marrom-clara que cobre a maior parte de seu corpo, com exceção de sua barriga de cor creme. Ele possui duas pequenas garras, uma em cada mão, que funcionam como polegares, e uma unha grande em cada pé, que forma seus dedos. Possui dois pequenos espinhos nas costas e uma cauda curta.
+
+Na cabeça, Cubone usa o crânio de sua mãe falecida como um capacete. Por causa disso, grande parte de seu verdadeiro rosto nunca foi vista, com exceção de seus olhos triangulares e pretos (às vezes verdes ou azuis) e de uma pequena área ao redor deles. Em uma carta da Bandai Namco, também é possível ver um pouco de sua boca, onde ele possui alguns dentes afiados e uma longa língua rosa. O crânio possui dois chifres arredondados na parte superior e uma ponta semelhante a um dente nas laterais inferiores. Debaixo do crânio, Cubone possui um focinho marrom. Esse pequeno Pokémon sobrevive graças à enorme habilidade que possui ao utilizar o osso que carrega como arma.
+
+Ele é chamado de Pokémon Solitário por sua tendência a ficar sozinho e evitar situações sociais, devido ao trauma causado pela morte de sua mãe Marowak. Diz-se que Cubone perdeu sua mãe pouco tempo depois de nascer. Cubone costuma chorar durante a noite lamentando a morte dela. Quando Cubone chora, o crânio que usa na cabeça vibra e emite “um som triste e melancólico”.
+
+Nas noites de lua cheia, dizem que seus choros são especialmente tristes. Cubone parece reconhecer na lua cheia uma imagem semelhante à de sua mãe e, por isso, uiva com uma tristeza ainda maior. Seus choros atraem Mandibuzz, seu predador natural, que utiliza os ossos desse Pokémon para decorar a si mesma e seu ninho.
+
+Diz-se que um Cubone evolui para Marowak quando consegue aceitar e superar a dor causada pela morte de sua mãe. Como mencionado em Pokémon Sleep, Cubone é conhecido por chorar enquanto dorme. Acredita-se que seus sonhos sejam sobre sua mãe falecida. Esses sonhos fazem Cubone chorar, mas o ato de chorar também o torna mais forte.
+
+Cubone vive em regiões rochosas, geralmente em montanhas ou cavernas. Ele também já habitou a Torre Pokémon, em Lavender Town, onde Pokémon falecidos eram enterrados e lamentados. A mãe de um desses Cubone aparece nesse local na forma de um fantasma.
+
+Descrição do Jigglypuff:
+Jigglypuff é um Pokémon rosa com um corpo esférico. Ele possui orelhas pontudas com a parte interna preta e grandes olhos azuis. Seus braços são pequenos e curtos, enquanto seus pés são um pouco mais compridos. No topo de sua cabeça há uma mecha de pelo enrolada.
+
+Seu corpo é cheio de ar e, como mostrado em Pokémon Stadium, Jigglypuff consegue esvaziar seu corpo até ficar completamente achatado. Ele também consegue flutuar ao puxar uma quantidade maior de ar para dentro de seu corpo, como demonstrado em Super Smash Bros.
+
+Jigglypuff pode usar seus olhos para hipnotizar seus oponentes. Ele possui uma grande capacidade pulmonar, superior à da maioria dos outros Pokémon. Quando consegue chamar a atenção de um adversário, Jigglypuff enche seus pulmões e canta uma canção de ninar suave e misteriosa. Essa melodia pode fazer qualquer pessoa que a escute ficar sonolenta.
+
+Se o adversário resistir ao sono, Jigglypuff colocará a própria vida em risco ao continuar cantando até ficar sem ar. Ele continuará cantando até que seu oponente adormeça. Jigglypuff consegue ajustar o comprimento de onda de sua voz para que corresponda às ondas cerebrais de alguém em sono profundo. Isso ajuda a garantir que seus adversários fiquem sonolentos.
+
+Seu alcance vocal ultrapassa 12 oitavas, embora sua habilidade varie de indivíduo para indivíduo. Sua música também varia dependendo da região e, em alguns lugares, seu canto chega a soar como gritos. Jigglypuff é encontrado principalmente em planícies verdes e campos cobertos de grama. Como mencionado em Pokémon Sleep, Jigglypuff é conhecido por cantar até mesmo enquanto dorme.
+
+Scream Tail possui uma aparência semelhante à de Jigglypuff. Há rumores de que Scream Tail seja um Jigglypuff de 1 bilhão de anos atrás. Segundo a IA Sada, esse Pokémon seria um ancestral de Jigglypuff vindo de um passado muito antigo. Entretanto, segundo uma versão da Professora Sada que foi invocada no Crystal Pool, ele seria uma versão equivalente de Jigglypuff proveniente de uma linha do tempo paralela.
