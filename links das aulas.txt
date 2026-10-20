@@ -1,0 +1,6 @@
+JA TO CANSADO DE ABRIR O SIGAA:
+otimização de primitivas https://fegemo.github.io/utf-cg/classes/optimization-1
+modelagem https://fegemo.github.io/utf-cg/classes/modeling
+iluminação https://fegemo.github.io/utf-cg/classes/lighting/
+texturas https://fegemo.github.io/utf-cg/classes/textures/
+efeitos visuais https://fegemo.github.io/utf-cg/classes/visual-effects/
