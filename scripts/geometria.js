@@ -17,6 +17,8 @@ function criaBufferModelo(gl,arrays) {
         texcoord:{buffer,numComponents:2,type:gl.FLOAT,stride:32,offset:24}
     };
     if(arrays.indices) atributos.indices = arrays.indices;
+    if(arrays.joints) atributos.joints = arrays.joints;
+    if(arrays.weights) atributos.weights = arrays.weights;
     return twgl.createBufferInfoFromArrays(gl,atributos);
 }
 
@@ -62,6 +64,7 @@ function criaIlha(gl) {
 function preparaModelo(gl,programInfo,modelo,transformacao) {
     const m4 = twgl.m4;
     for(const parte of modelo) {
+        parte.modelLocal = parte.model;
         parte.model = m4.multiply(transformacao,parte.model);
         parte.normalMatrix = m4.transpose(m4.inverse(parte.model));
         parte.vao = twgl.createVAOFromBufferInfo(gl,programInfo,parte.bufferInfo);

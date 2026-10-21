@@ -1,3 +1,5 @@
+import {Scene} from "./scripts/scene.js";
+
 async function loadShader(url) {
     const response = await fetch(url,{cache:"no-cache"});
     if(!response.ok) throw new Error("Erro ao carregar " + url);
@@ -30,8 +32,9 @@ function draw(programInfo,modelo,branca,normalLisa) {
         twgl.setUniforms(programInfo,{
             model:parte.model,normalMatrix:parte.normalMatrix,color:parte.color,
             textura:parte.textura || branca,mapaNormal:parte.mapaNormal || normalLisa,relevo:parte.relevo || 0,
-            brilho:parte.brilho ?? 20,especular:parte.especular ?? 0.12,emissao:parte.emissao || [0,0,0]
+            brilho:parte.brilho ?? 20,especular:parte.especular ?? 0.12,emissao:parte.emissao || [0,0,0],usaOssos:!!parte.ossos
         });
+        if(parte.ossos) twgl.setUniforms(programInfo,{ossos:parte.ossos});
         twgl.drawBufferInfo(gl,parte.bufferInfo,parte.mode ?? gl.TRIANGLES,undefined,0,parte.instancias);
     }
 }
@@ -39,20 +42,18 @@ function draw(programInfo,modelo,branca,normalLisa) {
 async function main() {
     const {programInfo,cubone,marowak,jigglypuff,branca,normalLisa} = await configuraTudo();
     const m4 = twgl.m4;
-    // que bosta, a origem dos dois veio diferente
-    const posCubone = m4.scale(m4.rotateY(m4.translation([-3,1.73,0]),Math.PI / 4),[0.65,0.65,0.65]);
-    const posMarowak = m4.scale(m4.rotateY(m4.translation([0,1.856,0]),Math.PI / 4),[0.7,0.7,0.7]);
-    const posJigglypuff =  m4.scale(m4.rotateY(m4.translation([3,0,0]),Math.PI / 2),[0.85,0.85,0.85]);
-    preparaModelo(gl,programInfo,cubone,posCubone);
-    preparaModelo(gl,programInfo,marowak,posMarowak);
-    preparaModelo(gl,programInfo,jigglypuff,posJigglypuff);
+    const scene = new Scene(gl,programInfo,{cubone,marowak,jigglypuff});
     const chao = preparaModelo(gl,programInfo,[{
         bufferInfo:twgl.primitives.createPlaneBufferInfo(gl,24,24),
         model:m4.translation([0,-0.02,0]),color:[0.18,0.18,0.18,1],especular:0
     }],m4.identity());
     gl.enable(gl.DEPTH_TEST);
     gl.clearColor(0.15,0.18,0.23,1);
-    function render() {
+    let anterior = performance.now();
+    function render(tempo) {
+        const dt = Math.min((tempo - anterior) / 1000,0.05);
+        anterior = tempo;
+        const {pokemons} = scene.update(dt);
         twgl.resizeCanvasToDisplaySize(canvas);
         gl.viewport(0,0,canvas.width,canvas.height);
         gl.clear(gl.COLOR_BUFFER_BIT |gl.DEPTH_BUFFER_BIT);
@@ -63,9 +64,7 @@ async function main() {
             luzPosicao:[3,3,2],luzPontual:[0.16,0.16,0.16],corNeblina:[0.15,0.18,0.23],distanciaNeblina:[20,40]
         });
         draw(programInfo,chao,branca,normalLisa);
-        draw(programInfo,cubone,branca,normalLisa);
-        draw(programInfo,marowak,branca,normalLisa);
-        draw(programInfo,jigglypuff,branca,normalLisa);
+        for(const pokemon of pokemons) draw(programInfo,pokemon.modelo,branca,normalLisa);
         gl.bindVertexArray(null);
         requestAnimationFrame(render);
     }

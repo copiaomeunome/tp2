@@ -69,7 +69,7 @@ async function loadGLB(gl,url) {
     for(const imagem of imagens) imagem.close();
     const matrizes = [];
     const nos = [];
-    function lerNo(indice,pai) {
+    function lerNo(indice,pai,animarNo) {
         const no = gltf.nodes[indice];
         let matriz = no.matrix;
         if(!matriz) {
@@ -80,24 +80,34 @@ async function loadGLB(gl,url) {
             matriz = m4.scale(matriz,no.scale || [1,1,1]);
             matriz.set(no.translation || [0,0,0],12);
         }
+        if(animarNo) matriz = animarNo(no.name || "",matriz);
         matrizes[indice] = m4.multiply(pai,matriz);
         nos.push(indice);
-        for(const filho of no.children || []) lerNo(filho,matrizes[indice]);
+        for(const filho of no.children || []) lerNo(filho,matrizes[indice],animarNo);
     }
     for(const indice of gltf.scenes[gltf.scene || 0].nodes || []) lerNo(indice,m4.identity());
     const partes = [];
+    const esqueletos = [];
+    function atualizaOssos() {
+        for(const esqueleto of esqueletos) {
+            const skin = gltf.skins[esqueleto.skin];
+            const inversas = skin.inverseBindMatrices === undefined ? null : lerAcessor(skin.inverseBindMatrices);
+            const inversaModelo = m4.inverse(matrizes[esqueleto.no]);
+            for(let i = 0;i < skin.joints.length;i++) {
+                const inversa = inversas ? inversas.subarray(i * 16,i * 16 + 16) : m4.identity();
+                esqueleto.ossos.set(m4.multiply(inversaModelo,m4.multiply(matrizes[skin.joints[i]],inversa)),i * 16);
+            }
+        }
+    }
     for(const indice of nos) {
         const no = gltf.nodes[indice];
         if(no.mesh === undefined) continue;
-        let juntas;
+        let ossos;
         if(no.skin !== undefined) {
             const skin = gltf.skins[no.skin];
-            const inversas = skin.inverseBindMatrices === undefined ? null : lerAcessor(skin.inverseBindMatrices);
-            const inversaModelo = m4.inverse(matrizes[indice]);
-            juntas = skin.joints.map((junta,i)=>{
-                const inversa = inversas ? inversas.subarray(i * 16,i * 16 + 16) : m4.identity();
-                return m4.multiply(inversaModelo,m4.multiply(matrizes[junta],inversa));
-            });
+            if(skin.joints.length > 48) throw new Error("Modelo com mais de 48 ossos");
+            ossos = new Float32Array(skin.joints.length * 16);
+            esqueletos.push({no:indice,skin:no.skin,ossos});
         }
         for(const primitiva of gltf.meshes[no.mesh].primitives) {
             const atributos = primitiva.attributes;
@@ -105,36 +115,16 @@ async function loadGLB(gl,url) {
             const pbr = material?.pbrMetallicRoughness;
             const textura = pbr?.baseColorTexture;
             const arrays = {};
-            const campos = {POSITION:"position",NORMAL:"normal"};
+            const campos = {POSITION:"position",NORMAL:"normal",JOINTS_0:"joints",WEIGHTS_0:"weights"};
             campos["TEXCOORD_" + (textura?.texCoord || 0)] = "texcoord";
             for(const [nome,campo] of Object.entries(campos)) {
                 if(atributos[nome] === undefined) continue;
                 const acessor = gltf.accessors[atributos[nome]];
                 arrays[campo] = {numComponents:componentes[acessor.type],data:lerAcessor(atributos[nome]),normalize:acessor.normalized || false};
             }
-            if(juntas && atributos.JOINTS_0 !== undefined && atributos.WEIGHTS_0 !== undefined) {
-                const indices = lerAcessor(atributos.JOINTS_0);
-                const pesos = lerAcessor(atributos.WEIGHTS_0);
-                // Aplica a pose exportada antes de criar os buffers.
-                for(const campo of ["position","normal"]) {
-                    if(!arrays[campo]) continue;
-                    const origem = arrays[campo].data;
-                    const dados = new Float32Array(origem.length);
-                    for(let i = 0;i < origem.length / 3;i++) {
-                        const matriz = new Float32Array(16);
-                        for(let j = 0;j < 4;j++) {
-                            const junta = juntas[indices[i * 4 + j]];
-                            for(let k = 0;k < 16;k++) matriz[k] += junta[k] * pesos[i * 4 + j];
-                        }
-                        const vetor = origem.subarray(i * 3,i * 3 + 3);
-                        const resultado = campo === "position" ? m4.transformPoint(matriz,vetor) : m4.transformNormal(matriz,vetor);
-                        dados.set(resultado,i * 3);
-                    }
-                    arrays[campo].data = dados;
-                }
-            }
             if(primitiva.indices !== undefined) arrays.indices = lerAcessor(primitiva.indices);
             partes.push({
+                no:indice,ossos:arrays.joints && arrays.weights ? ossos : null,
                 bufferInfo:criaBufferModelo(gl,arrays),
                 model:matrizes[indice],
                 color:pbr?.baseColorFactor || [1,1,1,1],
@@ -146,5 +136,12 @@ async function loadGLB(gl,url) {
             });
         }
     }
+    atualizaOssos();
+    partes.atualizarPose = (animarNo)=>{
+        nos.length = 0;
+        for(const indice of gltf.scenes[gltf.scene || 0].nodes || []) lerNo(indice,m4.identity(),animarNo);
+        atualizaOssos();
+        for(const parte of partes) parte.modelLocal = matrizes[parte.no];
+    };
     return partes;
 }
