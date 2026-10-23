@@ -1,4 +1,5 @@
 import {Scene} from "./scripts/scene.js";
+import {Camera} from "./scripts/camera.js";
 
 async function loadShader(url) {
     const response = await fetch(url,{cache:"no-cache"});
@@ -18,14 +19,6 @@ async function configuraTudo() {
     return{programInfo,cubone,marowak,jigglypuff,branca,normalLisa};
 }
 
-function infoCenas() {
-    const m4 = twgl.m4;
-    const camera = [0,4.8,12];
-    const view = m4.inverse(m4.lookAt(camera,[0,0.8,0],[0,1,0]));
-    const projection =m4.perspective(Math.PI / 4,canvas.width / canvas.height,0.1,100);
-    return {view,projection,camera};
-}
-
 function draw(programInfo,modelo,branca,normalLisa) {
     for(const parte of modelo) {
         gl.bindVertexArray(parte.vao);
@@ -43,6 +36,7 @@ async function main() {
     const {programInfo,cubone,marowak,jigglypuff,branca,normalLisa} = await configuraTudo();
     const m4 = twgl.m4;
     const scene = new Scene(gl,programInfo,{cubone,marowak,jigglypuff});
+    const camera = new Camera(canvas);
     const chao = preparaModelo(gl,programInfo,[{
         bufferInfo:twgl.primitives.createPlaneBufferInfo(gl,24,24),
         model:m4.translation([0,-0.02,0]),color:[0.18,0.18,0.18,1],especular:0
@@ -58,7 +52,7 @@ async function main() {
         gl.viewport(0,0,canvas.width,canvas.height);
         gl.clear(gl.COLOR_BUFFER_BIT |gl.DEPTH_BUFFER_BIT);
         gl.useProgram(programInfo.program);
-        const cena = infoCenas();
+        const cena = camera.update(dt,scene.protagonista);
         twgl.setUniforms(programInfo,{
             ...cena,luzDirecao:[-1,2,3],luzCor:[0.45,0.45,0.45],ambiente:[0.5,0.5,0.5],
             luzPosicao:[3,3,2],luzPontual:[0.16,0.16,0.16],corNeblina:[0.15,0.18,0.23],distanciaNeblina:[20,40]
