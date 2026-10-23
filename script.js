@@ -1,5 +1,6 @@
 import {Scene} from "./scripts/scene.js";
 import {Camera} from "./scripts/camera.js";
+import {DiaNoite} from "./scripts/dia-noite.js";
 
 async function loadShader(url) {
     const response = await fetch(url,{cache:"no-cache"});
@@ -37,25 +38,34 @@ async function main() {
     const m4 = twgl.m4;
     const scene = new Scene(gl,programInfo,{cubone,marowak,jigglypuff});
     const camera = new Camera(canvas);
+    const diaNoite = new DiaNoite();
+    for(const periodo of ["dia","noite"]){
+        const input = document.getElementById("tempo-" + periodo);
+        input.addEventListener("change",()=>{
+            const valor = input.valueAsNumber;
+            if(input.validity.valid) diaNoite.configurarDuracao(periodo,valor);
+            input.value = periodo === "dia" ? diaNoite.duracaoDia : diaNoite.duracaoNoite;
+        });
+    }
     const chao = preparaModelo(gl,programInfo,[{
         bufferInfo:twgl.primitives.createPlaneBufferInfo(gl,24,24),
         model:m4.translation([0,-0.02,0]),color:[0.18,0.18,0.18,1],especular:0
     }],m4.identity());
     gl.enable(gl.DEPTH_TEST);
-    gl.clearColor(0.15,0.18,0.23,1);
     let anterior = performance.now();
     function render(tempo) {
         const dt = Math.min((tempo - anterior) / 1000,0.05);
         anterior = tempo;
         const {pokemons} = scene.update(dt);
+        const {ceu,...iluminacao} = diaNoite.update(dt);
         twgl.resizeCanvasToDisplaySize(canvas);
         gl.viewport(0,0,canvas.width,canvas.height);
+        gl.clearColor(...ceu,1);
         gl.clear(gl.COLOR_BUFFER_BIT |gl.DEPTH_BUFFER_BIT);
         gl.useProgram(programInfo.program);
         const cena = camera.update(dt,scene.protagonista);
         twgl.setUniforms(programInfo,{
-            ...cena,luzDirecao:[-1,2,3],luzCor:[0.45,0.45,0.45],ambiente:[0.5,0.5,0.5],
-            luzPosicao:[3,3,2],luzPontual:[0.16,0.16,0.16],corNeblina:[0.15,0.18,0.23],distanciaNeblina:[20,40]
+            ...cena,...iluminacao,luzDirecao:[-1,2,3],luzPosicao:[3,3,2],distanciaNeblina:[20,40]
         });
         draw(programInfo,chao,branca,normalLisa);
         for(const pokemon of pokemons) draw(programInfo,pokemon.modelo,branca,normalLisa);

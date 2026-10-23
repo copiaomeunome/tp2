@@ -7,6 +7,7 @@ export class Camera{
         this.seguir = {angulo:0,elevacao:0.38,distancia:7};
         this.arrastando = null;
         document.addEventListener("keydown",(event)=>{
+            if(event.target instanceof HTMLInputElement) return;
             if(["1","2","3"].includes(event.key)){
                 this.modo = Number(event.key);
                 this.soltaMouse();
