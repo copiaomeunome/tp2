@@ -13,11 +13,11 @@ async function configuraTudo() {
     const fragmentShader =await loadShader("./shaders/fragment-shader.glsl");
     const programInfo =twgl.createProgramInfo(gl,[vertexShader, fragmentShader]);
     const cubone = await loadGLB(gl,"./assets/cubone.glb");
-    const marowak = await loadGLB(gl,"./assets/marowak_alola.glb");
+    const evolucao = await loadGLB(gl,"./assets/marowak_alola.glb");
     const jigglypuff =  await loadGLB(gl,"./assets/jigglypuff.glb");
     const branca = criaTextura(gl,new Uint8Array([255,255,255,255]),1,1);
     const normalLisa = criaTextura(gl,new Uint8Array([128,128,255,255]),1,1);
-    return{programInfo,cubone,marowak,jigglypuff,branca,normalLisa};
+    return{programInfo,cubone,evolucao,jigglypuff,branca,normalLisa};
 }
 
 function draw(programInfo,modelo,branca,normalLisa) {
@@ -34,9 +34,9 @@ function draw(programInfo,modelo,branca,normalLisa) {
 }
 
 async function main() {
-    const {programInfo,cubone,marowak,jigglypuff,branca,normalLisa} = await configuraTudo();
+    const {programInfo,cubone,evolucao,jigglypuff,branca,normalLisa} = await configuraTudo();
     const m4 = twgl.m4;
-    const scene = new Scene(gl,programInfo,{cubone,marowak,jigglypuff});
+    const scene = new Scene(gl,programInfo,{cubone,evolucao,jigglypuff});
     const camera = new Camera(canvas);
     const diaNoite = new DiaNoite();
     for(const periodo of ["dia","noite"]){
@@ -52,12 +52,21 @@ async function main() {
         model:m4.translation([0,-0.02,0]),color:[0.18,0.18,0.18,1],especular:0
     }],m4.identity());
     gl.enable(gl.DEPTH_TEST);
+    const estadoCubone = document.getElementById("estado-cubone");
+    const noitesEvolucao = document.getElementById("noites-evolucao");
+    let estadoAnterior = "";
+    let progressoAnterior = "";
     let anterior = performance.now();
     function render(tempo) {
         const dt = Math.min((tempo - anterior) / 1000,0.05);
         anterior = tempo;
-        const {pokemons} = scene.update(dt);
         const {ceu,...iluminacao} = diaNoite.update(dt);
+        const {pokemons} = scene.update(dt,diaNoite);
+        const estado = `${scene.cubone.evoluido ? "Marowak de Alola" : "Cubone"}: ${scene.cubone.estado}.`;
+        if(estado !== estadoAnterior){estadoCubone.textContent = estado;estadoAnterior = estado;}
+        const faltam = Math.max(0,10 - scene.noitesDormidas);
+        const progresso = scene.cubone.evoluido ? "Cubone evoluiu para Marowak de Alola!" : faltam === 1 ? "Falta 1 noite para evoluir." : `Faltam ${faltam} noites para evoluir.`;
+        if(progresso !== progressoAnterior){noitesEvolucao.textContent = progresso;progressoAnterior = progresso;}
         twgl.resizeCanvasToDisplaySize(canvas);
         gl.viewport(0,0,canvas.width,canvas.height);
         gl.clearColor(...ceu,1);

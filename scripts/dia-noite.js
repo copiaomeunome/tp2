@@ -2,6 +2,7 @@ export class DiaNoite{
     constructor(){
         this.tempo = 0;
         this.periodo = "dia";
+        this.noites = 0;
         this.duracaoDia = 30;
         this.duracaoNoite = 30;
     }
@@ -16,6 +17,7 @@ export class DiaNoite{
         let duracao = this.periodo === "dia" ? this.duracaoDia : this.duracaoNoite;
         while(this.tempo >= duracao){
             this.tempo -= duracao;
+            if(this.periodo === "noite") this.noites++;
             this.periodo = this.periodo === "dia" ? "noite" : "dia";
             duracao = this.periodo === "dia" ? this.duracaoDia : this.duracaoNoite;
         }

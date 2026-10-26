@@ -80,13 +80,14 @@ async function loadGLB(gl,url) {
             matriz = m4.scale(matriz,no.scale || [1,1,1]);
             matriz.set(no.translation || [0,0,0],12);
         }
-        if(animarNo) matriz = animarNo(no.name || "",matriz);
+        if(animarNo) matriz = animarNo(no.name || "",matriz,pai);
         matrizes[indice] = m4.multiply(pai,matriz);
         nos.push(indice);
         for(const filho of no.children || []) lerNo(filho,matrizes[indice],animarNo);
     }
     for(const indice of gltf.scenes[gltf.scene || 0].nodes || []) lerNo(indice,m4.identity());
     const partes = [];
+    const geometrias = [];
     const esqueletos = [];
     function atualizaOssos() {
         for(const esqueleto of esqueletos) {
@@ -134,6 +135,7 @@ async function loadGLB(gl,url) {
                 emissao:material?.emissiveFactor || [0,0,0],
                 mode:primitiva.mode ?? gl.TRIANGLES
             });
+            geometrias.push({parte:partes[partes.length - 1],arrays});
         }
     }
     atualizaOssos();
@@ -142,6 +144,33 @@ async function loadGLB(gl,url) {
         for(const indice of gltf.scenes[gltf.scene || 0].nodes || []) lerNo(indice,m4.identity(),animarNo);
         atualizaOssos();
         for(const parte of partes) parte.modelLocal = matrizes[parte.no];
+    };
+    partes.limites = (transformacao)=>{
+        const min = [Infinity,Infinity,Infinity],max = [-Infinity,-Infinity,-Infinity];
+        for(const {parte,arrays} of geometrias){
+            const matriz = m4.multiply(transformacao,parte.modelLocal || matrizes[parte.no]);
+            const vertices = arrays.position.data;
+            for(let i = 0;i < vertices.length / 3;i++){
+                let ponto = vertices.subarray(i * 3,i * 3 + 3);
+                if(parte.ossos){
+                    const deformado = [0,0,0];
+                    for(let j = 0;j < 4;j++){
+                        const peso = arrays.weights.data[i * 4 + j];
+                        if(!peso) continue;
+                        const indice = arrays.joints.data[i * 4 + j] * 16;
+                        const posicao = m4.transformPoint(parte.ossos.subarray(indice,indice + 16),ponto);
+                        for(let k = 0;k < 3;k++) deformado[k] += posicao[k] * peso;
+                    }
+                    ponto = deformado;
+                }
+                const mundo = m4.transformPoint(matriz,ponto);
+                for(let k = 0;k < 3;k++){
+                    min[k] = Math.min(min[k],mundo[k]);
+                    max[k] = Math.max(max[k],mundo[k]);
+                }
+            }
+        }
+        return {min,max};
     };
     return partes;
 }
