@@ -76,7 +76,7 @@ async function main() {
         gl.useProgram(programInfo.program);
         const cena = camera.update(dt,scene.protagonista);
         twgl.setUniforms(programInfo,{
-            ...cena,...iluminacao,luzDirecao:[-1,2,3],luzPosicao:[3,3,2],distanciaNeblina:[45,70],
+            ...cena,...iluminacao,luzDirecao:[-1,2,3],luzPosicao:[3,3,2],distanciaNeblina:[20,50],
             usaIluminacao:efeitosVisuais.iluminacao,usaNeblina:efeitosVisuais.neblina
         });
         draw(programInfo,chao,branca,normalLisa);

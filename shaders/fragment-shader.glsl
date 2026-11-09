@@ -66,6 +66,6 @@ void main() {
         float atenuacao = 1.0 / (1.0 + 0.09 * distancia + 0.032 * distancia * distancia);
         resultado += ilumina(n,normalize(paraLuz),observador,luzPontual,base.rgb) * atenuacao;
     }
-    float neblina = usaNeblina ? smoothstep(distanciaNeblina.x,distanciaNeblina.y,length(camera - vPosicao)) : 0.0;
+    float neblina = usaNeblina ? 0.65 * smoothstep(distanciaNeblina.x,distanciaNeblina.y,length(camera - vPosicao)) : 0.0;
     outColor = vec4(mix(linearParaSrgb(max(resultado,vec3(0))),corNeblina,neblina),base.a);
 }
