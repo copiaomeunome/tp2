@@ -2,8 +2,8 @@ export class Camera{
     constructor(canvas){
         this.canvas = canvas;
         this.modo = 1;
-        this.automatica = {angulo:0,elevacao:Math.PI / 4,distancia:14};
-        this.orbital = {angulo:0,elevacao:Math.PI / 4,distancia:14};
+        this.automatica = {angulo:0,elevacao:Math.PI / 4,distancia:34};
+        this.orbital = {angulo:0,elevacao:Math.PI / 4,distancia:34};
         this.seguir = {angulo:0,elevacao:0.38,distancia:7};
         this.arrastando = null;
         document.addEventListener("keydown",(event)=>{
@@ -36,7 +36,7 @@ export class Camera{
             const unidade = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? canvas.clientHeight : 1;
             const delta = Math.max(-300,Math.min(300,event.deltaY * unidade));
             const minimo = this.modo === 3 ? 3 : 5;
-            camera.distancia = Math.max(minimo,Math.min(35,camera.distancia * Math.exp(delta * 0.001)));
+            camera.distancia = Math.max(minimo,Math.min(50,camera.distancia * Math.exp(delta * 0.001)));
         },{passive:false});
     }
     soltaMouse(){

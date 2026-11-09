@@ -1,8 +1,12 @@
 const keys = {"w":false,"a":false,"s":false,"d":false};
+const efeitosVisuais = {iluminacao:true,neblina:true};
 
 document.addEventListener("keydown",(event)=>{
     if(event.target instanceof HTMLInputElement) return;
-    keys[event.key.toLowerCase()] = true;
+    const tecla = event.key.toLowerCase();
+    keys[tecla] = true;
+    if(!event.repeat && tecla === "l") efeitosVisuais.iluminacao = !efeitosVisuais.iluminacao;
+    if(!event.repeat && tecla === "n") efeitosVisuais.neblina = !efeitosVisuais.neblina;
 });
 
 document.addEventListener("keyup",(event)=>{

@@ -1,3 +1,14 @@
+import {RAIO_TERRENO} from './terreno.js';
+
+const RAIO_POKEMON = 0.8;
+const RAIO_CAMINHADA = RAIO_TERRENO - 1.2;
+
+function posicaoLivre(x,z,obstaculos){
+    return Math.hypot(x,z) <= RAIO_CAMINHADA && !obstaculos.some(o=>
+        Math.hypot(x - o.x,z - o.z) < o.raio + RAIO_POKEMON
+    );
+}
+
 function apontaOsso(matriz,pai,direcao){
     const m4 = twgl.m4,v3 = twgl.v3;
     const atual = v3.normalize([matriz[4],matriz[5],matriz[6]]);
@@ -23,17 +34,25 @@ class Pokemon{
         preparaModelo(gl,programInfo,modelo,twgl.m4.identity());
         this.atualizaModelo();
     }
-    update(dt){
+    update(dt,obstaculos = []){
         const dx = Number(this.isMoving.right) - Number(this.isMoving.left);
         const dz = Number(this.isMoving.down) - Number(this.isMoving.up);
-        return this.mover(dx,dz,dt);
+        return this.mover(dx,dz,dt,obstaculos);
     }
-    mover(dx,dz,dt){
+    mover(dx,dz,dt,obstaculos = []){
         const tamanho = Math.hypot(dx,dz);
         const x = this.pos.x,z = this.pos.z;
         if(tamanho){
-            this.pos.x = Math.max(-10.7,Math.min(10.7,x + dx / tamanho * this.velocity.x * dt));
-            this.pos.z = Math.max(-10.7,Math.min(10.7,z + dz / tamanho * this.velocity.z * dt));
+            const novoX = x + dx / tamanho * this.velocity.x * dt;
+            const novoZ = z + dz / tamanho * this.velocity.z * dt;
+            if(posicaoLivre(novoX,novoZ,obstaculos)){
+                this.pos.x = novoX;
+                this.pos.z = novoZ;
+            } else if(posicaoLivre(novoX,z,obstaculos)){
+                this.pos.x = novoX;
+            } else if(posicaoLivre(x,novoZ,obstaculos)){
+                this.pos.z = novoZ;
+            }
             this.angulo = Math.atan2(dz,-dx);
         }
         if(this.pos.x !== x || this.pos.z !== z){
@@ -78,9 +97,11 @@ export class Cubone extends Pokemon{
     }
     escolherDestino(obstaculos){
         for(let i = 0;i < 20;i++){
-            const ponto = {x:Math.random() * 19 - 9.5,z:Math.random() * 19 - 9.5};
+            const angulo = Math.random() * Math.PI * 2;
+            const distancia = Math.sqrt(Math.random()) * RAIO_CAMINHADA;
+            const ponto = {x:Math.cos(angulo) * distancia,z:Math.sin(angulo) * distancia};
             if(Math.hypot(ponto.x - this.pos.x,ponto.z - this.pos.z) < 2) continue;
-            if(obstaculos.some(p=>Math.hypot(ponto.x - p.pos.x,ponto.z - p.pos.z) < 2)) continue;
+            if(!posicaoLivre(ponto.x,ponto.z,obstaculos)) continue;
             this.destino = ponto;
             this.estado = "andando";
             return;
@@ -102,16 +123,13 @@ export class Cubone extends Pokemon{
         const dx = this.destino.x - this.pos.x,dz = this.destino.z - this.pos.z;
         const distancia = Math.hypot(dx,dz);
         const passo = Math.min(dt,distancia / this.velocity.x);
-        const x = this.pos.x + dx / (distancia || 1) * this.velocity.x * passo;
-        const z = this.pos.z + dz / (distancia || 1) * this.velocity.z * passo;
-        if(obstaculos.some(p=>Math.hypot(x - p.pos.x,z - p.pos.z) < 1.8) || distancia < 0.03){
+        if(distancia < 0.03 || !this.mover(dx,dz,passo,obstaculos)){
             this.destino = null;
             this.estado = "parado";
             this.espera = 1.5 + Math.random() * 2.5;
             this.mover(0,0,dt);
             return;
         }
-        this.mover(dx,dz,passo);
     }
     alternarPose(periodo){
         const descansando = this.estado === "sentado" || this.estado === "deitado";

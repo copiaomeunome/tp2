@@ -1,4 +1,5 @@
 import {Cubone,Jigglypuff} from "./pokemon.js";
+import {OBSTACULOS} from "./terreno.js";
 
 export class Scene{
     constructor(gl,programInfo,modelos){
@@ -29,8 +30,9 @@ export class Scene{
         this.protagonista.isMoving.down = keys.s;
         this.protagonista.isMoving.left = keys.a;
         this.protagonista.isMoving.right = keys.d;
-        this.protagonista.update(dt);
-        this.cubone.update(dt,this.periodo,[this.protagonista]);
+        const obstaculoPokemon = pokemon => ({x:pokemon.pos.x,z:pokemon.pos.z,raio:1});
+        this.protagonista.update(dt,[...OBSTACULOS,obstaculoPokemon(this.cubone)]);
+        this.cubone.update(dt,this.periodo,[...OBSTACULOS,obstaculoPokemon(this.protagonista)]);
         if(this.periodo === "noite" && this.cubone.estado === "deitado" && !this.cubone.evoluido) this.dormiuNestaNoite = true;
         return {pokemons:this.pokemons};
     }

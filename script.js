@@ -3,6 +3,7 @@ import {Camera} from "./scripts/camera.js";
 import {DiaNoite} from "./scripts/dia-noite.js";
 import {MusicaFundo} from "./scripts/musica-fundo.js";
 import {EfeitosSonoros} from "./scripts/efeitos-sonoros.js";
+import {criaTerreno} from "./scripts/terreno.js";
 
 async function loadShader(url) {
     const response = await fetch(url,{cache:"no-cache"});
@@ -37,7 +38,6 @@ function draw(programInfo,modelo,branca,normalLisa) {
 
 async function main() {
     const {programInfo,cubone,evolucao,jigglypuff,branca,normalLisa} = await configuraTudo();
-    const m4 = twgl.m4;
     const scene = new Scene(gl,programInfo,{cubone,evolucao,jigglypuff});
     const musica = new MusicaFundo();
     const efeitos = new EfeitosSonoros(musica);
@@ -51,10 +51,7 @@ async function main() {
             input.value = periodo === "dia" ? diaNoite.duracaoDia : diaNoite.duracaoNoite;
         });
     }
-    const chao = preparaModelo(gl,programInfo,[{
-        bufferInfo:twgl.primitives.createPlaneBufferInfo(gl,24,24),
-        model:m4.translation([0,-0.02,0]),color:[0.18,0.18,0.18,1],especular:0
-    }],m4.identity());
+    const chao = criaTerreno(gl,programInfo);
     gl.enable(gl.DEPTH_TEST);
     const estadoCubone = document.getElementById("estado-cubone");
     const noitesEvolucao = document.getElementById("noites-evolucao");
@@ -79,7 +76,8 @@ async function main() {
         gl.useProgram(programInfo.program);
         const cena = camera.update(dt,scene.protagonista);
         twgl.setUniforms(programInfo,{
-            ...cena,...iluminacao,luzDirecao:[-1,2,3],luzPosicao:[3,3,2],distanciaNeblina:[20,40]
+            ...cena,...iluminacao,luzDirecao:[-1,2,3],luzPosicao:[3,3,2],distanciaNeblina:[45,70],
+            usaIluminacao:efeitosVisuais.iluminacao,usaNeblina:efeitosVisuais.neblina
         });
         draw(programInfo,chao,branca,normalLisa);
         for(const pokemon of pokemons) draw(programInfo,pokemon.modelo,branca,normalLisa);

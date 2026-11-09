@@ -17,6 +17,8 @@ uniform vec3 luzPontual;
 uniform vec3 ambiente;
 uniform vec3 corNeblina;
 uniform vec2 distanciaNeblina;
+uniform bool usaIluminacao;
+uniform bool usaNeblina;
 in vec3 vPosicao;
 in vec3 vNormal;
 in vec2 vUv;
@@ -55,12 +57,15 @@ void main() {
         n = normalize(mat3(t * escala,b * escala,n) * detalhe);
     }
     vec3 observador = normalize(camera - vPosicao);
-    vec3 resultado = base.rgb * ambiente + emissao;
-    resultado += ilumina(n,normalize(luzDirecao),observador,luzCor,base.rgb);
-    vec3 paraLuz = luzPosicao - vPosicao;
-    float distancia = length(paraLuz);
-    float atenuacao = 1.0 / (1.0 + 0.09 * distancia + 0.032 * distancia * distancia);
-    resultado += ilumina(n,normalize(paraLuz),observador,luzPontual,base.rgb) * atenuacao;
-    float neblina = smoothstep(distanciaNeblina.x,distanciaNeblina.y,length(camera - vPosicao));
+    vec3 resultado = base.rgb + emissao;
+    if(usaIluminacao) {
+        resultado = base.rgb * ambiente + emissao;
+        resultado += ilumina(n,normalize(luzDirecao),observador,luzCor,base.rgb);
+        vec3 paraLuz = luzPosicao - vPosicao;
+        float distancia = length(paraLuz);
+        float atenuacao = 1.0 / (1.0 + 0.09 * distancia + 0.032 * distancia * distancia);
+        resultado += ilumina(n,normalize(paraLuz),observador,luzPontual,base.rgb) * atenuacao;
+    }
+    float neblina = usaNeblina ? smoothstep(distanciaNeblina.x,distanciaNeblina.y,length(camera - vPosicao)) : 0.0;
     outColor = vec4(mix(linearParaSrgb(max(resultado,vec3(0))),corNeblina,neblina),base.a);
 }
