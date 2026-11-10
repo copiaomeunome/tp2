@@ -1,0 +1,83 @@
+﻿* { box-sizing: border-box; }
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#canvas {
+    position: fixed;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid #315d86; outline-offset: 2px; }
+
+.progresso-cubone {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    left: max(16px, env(safe-area-inset-left));
+    max-width: min(400px, calc(100% - 86px));
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, .9);
+    color: #222;
+    font-size: .9rem;
+    pointer-events: none;
+}
+.progresso-cubone p { margin: 2px 0; }
+
+.botao-ajuda {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    width: 38px;
+    height: 38px;
+    border: 1px solid #777;
+    border-radius: 50%;
+    background: #fff;
+    font-size: 1.2rem;
+}
+
+dialog {
+    width: min(460px, calc(100% - 32px));
+    max-width: none;
+    max-height: calc(100% - 32px);
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 4px;
+    background: #fff;
+    color: #222;
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+dialog::backdrop { background: rgba(0, 0, 0, .35); }
+.painel-cabecalho { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+h1 { margin: 0; font-size: 1.2rem; }
+h2 { margin: 0 0 10px; font-size: 1rem; }
+.botao-fechar { min-width: 30px; min-height: 30px; font-size: 1.1rem; }
+section { margin-top: 20px; }
+.lista-comandos { margin: 0; padding: 0; list-style: none; }
+.lista-comandos li { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; }
+.lista-comandos li > :last-child { text-align: right; }
+.teclas { display: inline-flex; gap: 4px; }
+kbd { font-family: inherit; font-weight: bold; }
+.descricao, .nota { margin: 0 0 10px; font-size: .9rem; }
+.periodos { display: flex; flex-wrap: wrap; gap: 10px 20px; }
+.periodos input { width: 70px; margin-left: 6px; }
+.controles-audio { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 8px; }
+.estado p { margin: 5px 0; }
+
+@media (max-width: 420px) {
+    dialog { padding: 16px; }
+    .lista-comandos li { font-size: .9rem; }
+}

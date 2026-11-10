@@ -1,28 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
     <head>
         <meta charset="UTF-8">
-        <title>Teste TWGL</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Paraíso Pokémon</title>
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <canvas id="canvas" width="500" height="500"></canvas>
-        <div>
-            <label>Dia (segundos): <input id="tempo-dia" type="number" min="1" step="1" value="30"></label>
-            <label>Noite (segundos): <input id="tempo-noite" type="number" min="1" step="1" value="30"></label>
+        <canvas id="canvas" width="500" height="500" aria-label="Cena do Paraíso Pokémon"></canvas>
+
+        <div class="progresso-cubone">
+            <p id="noites-evolucao" aria-live="polite">Faltam 10 noites para evoluir.</p>
+            <p>Pressione P para deixar o Cubone deitado à noite e contar uma noite dormida.</p>
         </div>
-        <p>WASD: mover o Jigglypuff.</p>
-        <p>P: descansar ou voltar a passear (sentado de dia, deitado de noite).</p>
-        <p>L: ligar ou desligar a iluminação. N: ligar ou desligar a neblina.</p>
-        <p>Interaja com a página para ativar o áudio. Use os botões para controlar a música e os efeitos.</p>
-        <p id="estado-cubone"></p>
-        <p id="noites-evolucao">Faltam 10 noites para evoluir.</p>
-        <p>1: camera automatica. 2: orbital (arraste o mouse). 3: seguir Jigglypuff. Scroll: aproximar e afastar.</p>
+        <button id="abrir-ajuda" class="botao-ajuda" type="button" aria-label="Abrir comandos e configurações" aria-haspopup="dialog" aria-controls="painel-ajuda">?</button>
+
+        <dialog id="painel-ajuda" aria-labelledby="titulo-ajuda">
+            <div class="painel-cabecalho">
+                <h1 id="titulo-ajuda">Comandos e configurações</h1>
+                <button id="fechar-ajuda" class="botao-fechar" type="button" aria-label="Fechar comandos e configurações">×</button>
+            </div>
+
+            <div class="painel-conteudo">
+                <section aria-labelledby="titulo-comandos">
+                    <h2 id="titulo-comandos">Comandos</h2>
+                    <ul class="lista-comandos">
+                        <li><span>Mover o Jigglypuff</span><span class="teclas"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span></li>
+                        <li><span>Descansar ou passear</span><kbd>P</kbd></li>
+                        <li><span>Câmera automática</span><kbd>1</kbd></li>
+                        <li><span>Câmera orbital</span><span><kbd>2</kbd> + arrastar</span></li>
+                        <li><span>Seguir Jigglypuff</span><kbd>3</kbd></li>
+                        <li><span>Aproximar ou afastar</span><span>Scroll do mouse</span></li>
+                        <li><span>Iluminação</span><kbd>L</kbd></li>
+                        <li><span>Neblina</span><kbd>N</kbd></li>
+                    </ul>
+                </section>
+
+                <section aria-labelledby="titulo-configuracoes">
+                    <h2 id="titulo-configuracoes">Configurações</h2>
+                    <p class="descricao">Ajuste a duração de cada período em segundos.</p>
+                    <div class="periodos">
+                        <label for="tempo-dia">Dia <input id="tempo-dia" type="number" min="1" step="1" value="30"></label>
+                        <label for="tempo-noite">Noite <input id="tempo-noite" type="number" min="1" step="1" value="30"></label>
+                    </div>
+                    <div id="controles-audio" class="controles-audio" aria-label="Controles de áudio"></div>
+                    <p class="nota">Interaja com a página para ativar o áudio.</p>
+                </section>
+
+                <section class="estado" aria-labelledby="titulo-cubone">
+                    <h2 id="titulo-cubone">Cubone</h2>
+                    <p id="estado-cubone" aria-live="polite"></p>
+                </section>
+            </div>
+        </dialog>
 
         <script src="https://twgljs.org/dist/7.x/twgl-full.min.js"></script>
         <script src="scripts/geometria.js"></script>
         <script src="scripts/texturas.js"></script>
         <script src="scripts/glb-loader.js"></script>
         <script src="scripts/keys.js"></script>
+        <script src="scripts/interface.js"></script>
         <script type="module" src="script.js"></script>
     </body>
 </html>

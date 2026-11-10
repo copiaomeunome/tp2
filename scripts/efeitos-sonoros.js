@@ -33,7 +33,7 @@ export class EfeitosSonoros {
             }
             this.atualizarBotao();
         });
-        document.body.appendChild(this.botao);
+        document.getElementById('controles-audio').appendChild(this.botao);
         this.atualizarBotao();
         this.evolucao.addEventListener('ended', () => this.restaurarMusica());
         this.evolucao.addEventListener('error', () => this.restaurarMusica());

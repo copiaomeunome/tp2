@@ -13,7 +13,7 @@ export class MusicaFundo {
         this.botao.type = "button";
         this.botao.textContent = "Ligar música";
         this.botao.setAttribute("aria-pressed", "false");
-        document.body.appendChild(this.botao);
+        document.getElementById("controles-audio").appendChild(this.botao);
 
         this.botao.addEventListener("click", () => {
             if (!this.audio.paused) {
