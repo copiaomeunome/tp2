@@ -4,6 +4,8 @@ import {DiaNoite} from "./scripts/dia-noite.js";
 import {MusicaFundo} from "./scripts/musica-fundo.js";
 import {EfeitosSonoros} from "./scripts/efeitos-sonoros.js";
 import {criaTerreno} from "./scripts/terreno.js";
+import {criaMoinho} from "./scripts/moinho.js";
+import {historiaAberta,mostrarMensagemEvolucao} from "./scripts/mensagens.js";
 
 async function loadShader(url) {
     const response = await fetch(url,{cache:"no-cache"});
@@ -52,6 +54,7 @@ async function main() {
         });
     }
     const chao = criaTerreno(gl,programInfo);
+    const moinho = criaMoinho(gl,programInfo);
     gl.enable(gl.DEPTH_TEST);
     const estadoCubone = document.getElementById("estado-cubone");
     const noitesEvolucao = document.getElementById("noites-evolucao");
@@ -61,9 +64,16 @@ async function main() {
     function render(tempo) {
         const dt = Math.min((tempo - anterior) / 1000,0.05);
         anterior = tempo;
+        if(historiaAberta()){
+            requestAnimationFrame(render);
+            return;
+        }
         const {ceu,...iluminacao} = diaNoite.update(dt);
+        moinho.update(dt);
+        const jaEvoluiu = scene.cubone.evoluido;
         const {pokemons} = scene.update(dt,diaNoite);
         efeitos.update(dt,diaNoite.periodo,scene.cubone.evoluido,pokemons);
+        if(!jaEvoluiu && scene.cubone.evoluido) mostrarMensagemEvolucao();
         const estado = `${scene.cubone.evoluido ? "Marowak de Alola" : "Cubone"}: ${scene.cubone.estado}.`;
         if(estado !== estadoAnterior){estadoCubone.textContent = estado;estadoAnterior = estado;}
         const faltam = Math.max(0,10 - scene.noitesDormidas);
@@ -80,6 +90,7 @@ async function main() {
             usaIluminacao:efeitosVisuais.iluminacao,usaNeblina:efeitosVisuais.neblina
         });
         draw(programInfo,chao,branca,normalLisa);
+        draw(programInfo,moinho.modelo,branca,normalLisa);
         for(const pokemon of pokemons) draw(programInfo,pokemon.modelo,branca,normalLisa);
         gl.bindVertexArray(null);
         requestAnimationFrame(render);

@@ -7,13 +7,31 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <div id="historia" class="historia" role="dialog" aria-modal="true" aria-labelledby="titulo-historia">
+            <div class="historia-conteudo">
+                <h1 id="titulo-historia">Para a Amora</h1>
+                <img id="historia-sprite" src="assets/sprites/cubone-gba.png" alt="Cubone" width="192" height="192">
+                <div id="historia-parte-1">
+                    <p>O Cubone é um Pokémon pequeno que tem uma história especial. Ele usa na cabeça o crânio de sua mãe, que já faleceu há tempos, e como arma ele usa seu fêmour. Mesmo após sua partida, sua mãe continua protegendo o filho. À noite, quando ele olha para a lua, sente tanta saudade dela que começa a chorar (você pode ouví-lo chorar durante a noite).</p>
+                    <button id="historia-proximo" type="button">Próximo</button>
+                </div>
+                <div id="historia-parte-2" hidden>
+                    <p>Mas, aos poucos, Cubone aprende que tudo bem sentir saudade e pedir carinho quando está triste. Com o tempo, ele encontra força para seguir em frente e evolui para Marowak, levando consigo o amor e as lembranças de sua mãe.</p>
+                    <button id="historia-jogar" type="button">Jogar</button>
+                </div>
+                <div id="historia-evolucao" hidden>
+                    <p>Amora, aproveite os momentos com seus pais: converse, brinque, dê abraços e conte a eles sobre seus sonhos. Os pequenos momentos de carinho podem se transformar em lembranças muito especiais. E lembre-se: ser forte também é saber sentir, chorar e aceitar o amor de quem cuida de você.</p>
+                    <button id="historia-continuar" type="button">Continuar</button>
+                </div>
+            </div>
+        </div>
         <canvas id="canvas" width="500" height="500" aria-label="Cena do Paraíso Pokémon"></canvas>
 
         <div class="progresso-cubone">
             <p id="noites-evolucao" aria-live="polite">Faltam 10 noites para evoluir.</p>
             <p>Pressione P para deixar o Cubone deitado à noite e contar uma noite dormida.</p>
         </div>
-        <button id="abrir-ajuda" class="botao-ajuda" type="button" aria-label="Abrir comandos e configurações" aria-haspopup="dialog" aria-controls="painel-ajuda">?</button>
+        <button id="abrir-ajuda" class="botao-ajuda" type="button" aria-label="Abrir comandos e configurações" aria-haspopup="dialog" aria-controls="painel-ajuda" inert>?</button>
 
         <dialog id="painel-ajuda" aria-labelledby="titulo-ajuda">
             <div class="painel-cabecalho">
@@ -60,6 +78,7 @@
         <script src="scripts/glb-loader.js"></script>
         <script src="scripts/keys.js"></script>
         <script src="scripts/interface.js"></script>
+        <script type="module" src="scripts/mensagens.js"></script>
         <script type="module" src="script.js"></script>
     </body>
 </html>

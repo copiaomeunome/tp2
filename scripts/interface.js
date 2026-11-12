@@ -8,7 +8,9 @@ abrirAjuda.addEventListener("click",()=>{
     fecharAjuda.focus();
 });
 fecharAjuda.addEventListener("click",()=>painelAjuda.close());
-painelAjuda.addEventListener("close",()=>abrirAjuda.focus());
+painelAjuda.addEventListener("close",()=>{
+    if(document.getElementById("historia").hidden) abrirAjuda.focus();
+});
 // Os atalhos do jogo nao devem interferir na navegacao pelo painel.
 painelAjuda.addEventListener("keydown",(event)=>{
     event.stopPropagation();
